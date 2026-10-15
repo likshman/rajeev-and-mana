@@ -193,8 +193,8 @@
   /* ---------- DESKTOP: sideways journey ---------- */
   var D = {
     spacer: $('#deskSpacer'), stage: $('#stage'), track: $('#track'), prop: $('#dProp'),
-    X3: 5980, X4: 7420, PIN: 2900, MAXTX: 11100, TOT: 14000,
-    J: [0, 1440, 3740, 5980, 10320, 12560, 14000],
+    X3: 6340, X4: 7780, PIN: 2900, MAXTX: 11460, TOT: 14360,
+    J: [0, 1440, 3740, 6340, 10680, 12920, 14360],
     s: 1, rvs: [], ready: false
   };
   function deskLayout() {
@@ -218,7 +218,7 @@
     var tx = s < D.X3 ? s : (s < D.X3 + D.PIN ? D.X3 : Math.min(s - D.PIN, D.MAXTX));
     D.track.style.transform = 'translate3d(' + (-tx).toFixed(1) + 'px,0,0)';
     setProgress(clamp(s / D.TOT));
-    bg.style.backgroundColor = mix(tx, [[0, C.gate], [1440, C.jp], [3740, C.cross], [5980, C.prop], [7420, C.neg], [11100, C.end]]);
+    bg.style.backgroundColor = mix(tx, [[0, C.gate], [1440, C.jp], [3740, C.cross], [6340, C.prop], [7780, C.neg], [11460, C.end]]);
     petals.style.setProperty('--neg', clamp((tx - (D.X4 - 1500)) / 1200).toFixed(3));
     var cz = $('.cz', D.track); if (cz) cz.style.setProperty('--open', clamp((tx - (D.X4 - 1100)) / 1300).toFixed(3));
     applyWipes(D.prop, [clamp((tx - (D.X3 - 1200)) / 1000), clamp((s - D.X3 - 120) / 760), clamp((s - D.X3 - 1000) / 760), clamp((s - D.X3 - 1880) / 760)], 10);
