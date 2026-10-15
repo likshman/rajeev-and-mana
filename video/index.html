@@ -38,12 +38,11 @@
       url("poster.jpg") center / cover no-repeat, var(--bg);
     cursor:pointer; }
   .top, .bottom { display:flex; flex-direction:column; align-items:center; gap:14px; }
-  #go { display:flex; align-items:center; gap:12px; border:1px solid rgba(240,228,208,.6);
-    background:rgba(12,10,8,.4); color:var(--cream); font:inherit; font-size:21px; letter-spacing:.08em;
-    padding:14px 28px; border-radius:999px; cursor:pointer;
+  #go { display:flex; align-items:center; justify-content:center; width:84px; height:84px; padding:0;
+    border:1px solid rgba(240,228,208,.7); background:rgba(12,10,8,.4); border-radius:50%; cursor:pointer;
     backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
-  #go .tri { width:0; height:0; border-left:13px solid var(--cream);
-    border-top:8px solid transparent; border-bottom:8px solid transparent; }
+  #go .tri { width:0; height:0; margin-left:6px; border-left:24px solid var(--cream);
+    border-top:15px solid transparent; border-bottom:15px solid transparent; }
   .hint { font-size:15px; color:var(--dim); font-style:italic; }
 
   #end { background:var(--bg); opacity:0; pointer-events:none; }
@@ -62,7 +61,7 @@
     <div class="rule"></div>
   </div>
   <div class="bottom">
-    <button id="go" type="button"><span class="tri"></span>Play our video</button>
+    <button id="go" type="button" aria-label="Play the video"><span class="tri"></span></button>
     <div class="hint">Sound on 🔊</div>
   </div>
 </div>
