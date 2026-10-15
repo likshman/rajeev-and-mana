@@ -1,0 +1,18 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Rajeev and Mana//Two Shores//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Rajeev & Mana
+BEGIN:VEVENT
+UID:twoshores-20270411@rajeev-and-mana
+DTSTAMP:20261015T000000Z
+DTSTART;VALUE=DATE:20270411
+DTEND;VALUE=DATE:20270412
+SUMMARY:Rajeev & Mana · Save the date
+LOCATION:Dumaguete\, Philippines
+DESCRIPTION:Sunday\, April 11\, 2027 in Dumaguete\, Philippines. More det
+ ails will follow with the invitation.
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR
