@@ -46,10 +46,43 @@
       google: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + E(title) + '&dates=20270411/20270412&details=' + E(det) + '&location=' + E(loc),
       outlook: ol('outlook.live.com'),
       o365: ol('outlook.office.com'),
-      yahoo: 'https://calendar.yahoo.com/?v=60&title=' + E(title) + '&st=20270411&et=20270412&dur=allday&desc=' + E(det) + '&in_loc=' + E(loc)
+      yahoo: 'https://calendar.yahoo.com/?v=60&title=' + E(title) + '&st=20270411&et=20270412&dur=allday&desc=' + E(det) + '&in_loc=' + E(loc),
+      apple: 'assets/save-the-date-' + (ja ? 'ja' : 'en') + '.ics'
     };
     $$('[data-cal]').forEach(function (a) { a.href = urls[a.getAttribute('data-cal')]; });
   }
+
+  /* ---------- iCloud / Apple Calendar (.ics) ---------- */
+  var UA = navigator.userAgent || '';
+  var isApple = /iPhone|iPad|iPod|Macintosh/.test(UA);
+  var inAppBrowser = /FBAN|FBAV|FB_IAB|Instagram|Line\/|Messenger|MicroMessenger|KAKAOTALK|Twitter/i.test(UA);
+  function icsFile() { return 'assets/save-the-date-' + (state.lang === 'ja' ? 'ja' : 'en') + '.ics'; }
+  function downloadIcs(file) {
+    if (!window.fetch || !window.URL || !URL.createObjectURL) { location.href = file; return; }
+    fetch(file).then(function (r) { if (!r.ok) throw new Error(r.status); return r.blob(); }).then(function (b) {
+      var blob = new Blob([b], { type: 'text/calendar' });
+      var u = URL.createObjectURL(blob), t = document.createElement('a');
+      t.href = u; t.download = 'rajeev-and-mana-save-the-date.ics';
+      document.body.appendChild(t); t.click();
+      setTimeout(function () { URL.revokeObjectURL(u); t.remove(); }, 1500);
+    }).catch(function () { location.href = file; });
+  }
+  $$('[data-cal="apple"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var file = icsFile(), abs = new URL(file, location.href).href;
+      if (isApple && inAppBrowser) {
+        // Messenger / LINE / Instagram etc. can't open .ics files; hand it to the iPhone's Calendar instead
+        location.href = abs.replace(/^https?:/, 'webcal:');
+      } else if (isApple) {
+        // Safari opens the event straight in Apple Calendar (synced to iCloud)
+        location.href = abs;
+      } else {
+        // Windows / Android: save the file; opening it adds the event to the default calendar
+        downloadIcs(file);
+      }
+    });
+  });
 
   /* ---------- copy details ---------- */
   function copyDetails(btn) {
@@ -257,7 +290,15 @@
       setTimeout(function () { if (isDesk()) deskGo(1); else mobGo(1); }, 450);
     });
   });
-  $$('[data-setlang]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.getAttribute('data-setlang')); }); });
+  $$('[data-setlang]').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-setlang')); if (!state.started) startMusic(); });
+  });
+  // music also begins once the guest starts scrolling (browsers that block this start it on the next tap or click)
+  window.addEventListener('scroll', function onFirstScroll() {
+    if (window.scrollY < 40) return;
+    window.removeEventListener('scroll', onFirstScroll);
+    if (!state.started) startMusic();
+  }, { passive: true });
   $('#mute').addEventListener('click', function () { setMuted(!state.muted); });
   $('#vol').addEventListener('input', function (e) {
     var v = Number(e.target.value);
@@ -273,7 +314,6 @@
   tickCountdown();
   setInterval(tickCountdown, 1000);
   relayout();
-  startMusic();
   window.addEventListener('load', relayout);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
 })();
