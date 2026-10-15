@@ -16,41 +16,63 @@
 <meta property="og:video:type" content="video/mp4">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  :root { --bg:#0c0a08; --cream:#f0e4d0; --gold:#d6b278; --dim:#aa9678; }
+  :root { --bg:#0c0a08; --cream:#f0e4d0; --gold:#d6b278; --dim:#cbb796; }
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body { height:100%; background:var(--bg); color:var(--cream);
     font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif; overflow:hidden; }
   video { position:fixed; inset:0; width:100%; height:100%; object-fit:contain; background:var(--bg); }
-  .btn { position:fixed; z-index:3; border:1px solid rgba(240,228,208,.45); background:rgba(12,10,8,.55);
-    color:var(--cream); font:inherit; font-size:17px; letter-spacing:.06em; padding:10px 18px; border-radius:999px;
-    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); cursor:pointer; text-decoration:none; }
-  #sound { bottom:calc(24px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); }
-  #skip { top:calc(16px + env(safe-area-inset-top)); right:16px; font-size:15px; padding:8px 14px; opacity:.8; }
-  #play { inset:0; margin:auto; width:96px; height:96px; padding:0; font-size:34px; display:none; }
-  #end { position:fixed; inset:0; z-index:4; display:flex; flex-direction:column; align-items:center;
-    justify-content:center; gap:14px; text-align:center; padding:24px; background:var(--bg);
-    opacity:0; pointer-events:none; transition:opacity .6s ease; }
+
+  .screen { position:fixed; inset:0; z-index:4; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:14px; text-align:center; padding:24px; transition:opacity .6s ease; }
+  .k { letter-spacing:.35em; font-size:15px; color:var(--dim); }
+  h1 { font-style:italic; font-weight:500; font-size:clamp(44px, 12vw, 76px); line-height:1.05; }
+  .rule { width:120px; height:1px; background:var(--gold); margin:6px 0; }
+  .when { color:var(--gold); font-size:20px; letter-spacing:.04em; }
+  #start .top { text-shadow:0 1px 14px rgba(12,10,8,.75), 0 0 2px rgba(12,10,8,.5); }
+  #start .when { color:var(--cream); }
+
+  #start { justify-content:space-between;
+    padding:calc(9vh + env(safe-area-inset-top)) 24px calc(7vh + env(safe-area-inset-bottom));
+    background:
+      linear-gradient(rgba(12,10,8,.55) 0%, rgba(12,10,8,.15) 35%, rgba(12,10,8,.1) 60%, rgba(12,10,8,.7) 100%),
+      url("poster.jpg") center / cover no-repeat, var(--bg);
+    cursor:pointer; }
+  .top, .bottom { display:flex; flex-direction:column; align-items:center; gap:14px; }
+  #go { display:flex; align-items:center; gap:12px; border:1px solid rgba(240,228,208,.6);
+    background:rgba(12,10,8,.4); color:var(--cream); font:inherit; font-size:21px; letter-spacing:.08em;
+    padding:14px 28px; border-radius:999px; cursor:pointer;
+    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+  #go .tri { width:0; height:0; border-left:13px solid var(--cream);
+    border-top:8px solid transparent; border-bottom:8px solid transparent; }
+  .hint { font-size:15px; color:var(--dim); font-style:italic; }
+
+  #end { background:var(--bg); opacity:0; pointer-events:none; }
   #end.show { opacity:1; pointer-events:auto; }
-  #end .k { letter-spacing:.35em; font-size:15px; color:var(--dim); }
-  #end h1 { font-style:italic; font-weight:500; font-size:clamp(44px, 12vw, 76px); line-height:1.05; }
-  #end .rule { width:120px; height:1px; background:var(--gold); margin:6px 0; }
-  #end p { color:var(--gold); font-size:20px; }
   #end a { color:var(--cream); }
-  .hide { display:none !important; }
+  .gone { opacity:0; pointer-events:none; }
 </style>
 </head>
 <body>
-<video id="v" src="save-the-date.mp4" poster="poster.jpg" autoplay muted playsinline webkit-playsinline preload="auto"></video>
+<video id="v" src="save-the-date.mp4" poster="poster.jpg" playsinline webkit-playsinline preload="auto"></video>
 
-<button id="sound" class="btn" type="button">🔊 Tap for sound</button>
-<a id="skip" class="btn" href="https://likshman.github.io/rajeev-and-mana/">Skip ›</a>
-<button id="play" class="btn" type="button" aria-label="Play">▶</button>
+<div id="start" class="screen" role="button" aria-label="Play the save the date video">
+  <div class="top">
+    <div class="k">SAVE THE DATE</div>
+    <h1>Rajeev &amp; Mana</h1>
+    <div class="rule"></div>
+    <div class="when">11 · 04 · 2027 &nbsp;·&nbsp; Dumaguete</div>
+  </div>
+  <div class="bottom">
+    <button id="go" type="button"><span class="tri"></span>Play our video</button>
+    <div class="hint">Sound on 🔊</div>
+  </div>
+</div>
 
-<div id="end" role="status" aria-live="polite">
+<div id="end" class="screen" role="status" aria-live="polite">
   <div class="k">SAVE THE DATE</div>
   <h1>Rajeev &amp; Mana</h1>
   <div class="rule"></div>
-  <p>Opening our page in <span id="n">3</span>…</p>
+  <p class="when">Opening our page in <span id="n">3</span>…</p>
   <a href="https://likshman.github.io/rajeev-and-mana/">Go now</a>
 </div>
 
@@ -58,29 +80,24 @@
   var TARGET = "https://likshman.github.io/rajeev-and-mana/";
   var DELAY = 3; // seconds after the video ends
   var v = document.getElementById("v"),
-      sound = document.getElementById("sound"),
-      play = document.getElementById("play"),
+      start = document.getElementById("start"),
       end = document.getElementById("end"),
       n = document.getElementById("n");
 
-  // Autoplay with sound is blocked by browsers, so start muted and offer sound.
-  var p = v.play();
-  if (p && p.catch) p.catch(function () { play.style.display = "block"; });
-
-  sound.addEventListener("click", function () {
+  // One tap starts the video with sound (browsers require a tap before playing audio).
+  function begin() {
     v.muted = false;
-    if (v.ended || v.currentTime > v.duration - 0.2) v.currentTime = 0;
-    v.play();
-    sound.classList.add("hide");
-  });
-  play.addEventListener("click", function () {
-    v.muted = false; v.play(); play.style.display = "none"; sound.classList.add("hide");
-  });
-  v.addEventListener("playing", function () { play.style.display = "none"; });
+    v.volume = 1;
+    var p = v.play();
+    start.classList.add("gone");
+    if (p && p.catch) p.catch(function () { start.classList.remove("gone"); });
+  }
+  start.addEventListener("click", begin);
+
+  // Tap the video to pause / resume.
+  v.addEventListener("click", function () { v.paused ? v.play() : v.pause(); });
 
   v.addEventListener("ended", function () {
-    sound.classList.add("hide");
-    document.getElementById("skip").classList.add("hide");
     end.classList.add("show");
     var left = DELAY;
     n.textContent = left;
