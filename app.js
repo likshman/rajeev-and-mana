@@ -121,7 +121,17 @@
     $$('[data-cd]').forEach(function (el) { el.textContent = v[el.getAttribute('data-cd')]; });
   }
 
-  /* ---------- music ---------- */
+  /* ---------- music: three songs, always random, no immediate repeats ---------- */
+  var TRACKS = ['assets/music.mp3', 'assets/bgm-summer.mp3', 'assets/bgm-one-summers-day.mp3'];
+  var track = Math.floor(Math.random() * TRACKS.length);
+  audio.loop = false;
+  audio.src = TRACKS[track];
+  audio.addEventListener('ended', function () {
+    // pick a different song at random (never the same one twice in a row)
+    track = (track + 1 + Math.floor(Math.random() * (TRACKS.length - 1))) % TRACKS.length;
+    audio.src = TRACKS[track];
+    if (!state.muted) playAudio();
+  });
   var unlockEvents = ['pointerdown', 'touchend', 'keydown'];
   function unlock() {
     unlockEvents.forEach(function (t) { document.removeEventListener(t, unlock, true); });
@@ -131,7 +141,6 @@
     try { var p = audio.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
   }
   function startMusic() {
-    audio.loop = true;
     try { audio.volume = 0; } catch (e) {}
     state.cur = 0; state.started = true;
     body.setAttribute('data-started', '1');
