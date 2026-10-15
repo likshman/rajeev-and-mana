@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rajeev &amp; Mana · Save the date</title>
+<meta name="description" content="Save the date · 11 April 2027 · Dumaguete">
+<meta property="og:type" content="video.other">
+<meta property="og:title" content="Rajeev &amp; Mana · Save the date">
+<meta property="og:description" content="11 April 2027 · Dumaguete · Tap to watch">
+<meta property="og:url" content="https://likshman.github.io/rajeev-and-mana/video/">
+<meta property="og:image" content="https://likshman.github.io/rajeev-and-mana/video/share.jpg">
+<meta property="og:image:width" content="1080">
+<meta property="og:image:height" content="566">
+<meta property="og:video" content="https://likshman.github.io/rajeev-and-mana/video/save-the-date.mp4">
+<meta property="og:video:type" content="video/mp4">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { --bg:#0c0a08; --cream:#f0e4d0; --gold:#d6b278; --dim:#aa9678; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; background:var(--bg); color:var(--cream);
+    font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif; overflow:hidden; }
+  video { position:fixed; inset:0; width:100%; height:100%; object-fit:contain; background:var(--bg); }
+  .btn { position:fixed; z-index:3; border:1px solid rgba(240,228,208,.45); background:rgba(12,10,8,.55);
+    color:var(--cream); font:inherit; font-size:17px; letter-spacing:.06em; padding:10px 18px; border-radius:999px;
+    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); cursor:pointer; text-decoration:none; }
+  #sound { bottom:calc(24px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); }
+  #skip { top:calc(16px + env(safe-area-inset-top)); right:16px; font-size:15px; padding:8px 14px; opacity:.8; }
+  #play { inset:0; margin:auto; width:96px; height:96px; padding:0; font-size:34px; display:none; }
+  #end { position:fixed; inset:0; z-index:4; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:14px; text-align:center; padding:24px; background:var(--bg);
+    opacity:0; pointer-events:none; transition:opacity .6s ease; }
+  #end.show { opacity:1; pointer-events:auto; }
+  #end .k { letter-spacing:.35em; font-size:15px; color:var(--dim); }
+  #end h1 { font-style:italic; font-weight:500; font-size:clamp(44px, 12vw, 76px); line-height:1.05; }
+  #end .rule { width:120px; height:1px; background:var(--gold); margin:6px 0; }
+  #end p { color:var(--gold); font-size:20px; }
+  #end a { color:var(--cream); }
+  .hide { display:none !important; }
+</style>
+</head>
+<body>
+<video id="v" src="save-the-date.mp4" poster="poster.jpg" autoplay muted playsinline webkit-playsinline preload="auto"></video>
+
+<button id="sound" class="btn" type="button">🔊 Tap for sound</button>
+<a id="skip" class="btn" href="https://likshman.github.io/rajeev-and-mana/">Skip ›</a>
+<button id="play" class="btn" type="button" aria-label="Play">▶</button>
+
+<div id="end" role="status" aria-live="polite">
+  <div class="k">SAVE THE DATE</div>
+  <h1>Rajeev &amp; Mana</h1>
+  <div class="rule"></div>
+  <p>Opening our page in <span id="n">3</span>…</p>
+  <a href="https://likshman.github.io/rajeev-and-mana/">Go now</a>
+</div>
+
+<script>
+  var TARGET = "https://likshman.github.io/rajeev-and-mana/";
+  var DELAY = 3; // seconds after the video ends
+  var v = document.getElementById("v"),
+      sound = document.getElementById("sound"),
+      play = document.getElementById("play"),
+      end = document.getElementById("end"),
+      n = document.getElementById("n");
+
+  // Autoplay with sound is blocked by browsers, so start muted and offer sound.
+  var p = v.play();
+  if (p && p.catch) p.catch(function () { play.style.display = "block"; });
+
+  sound.addEventListener("click", function () {
+    v.muted = false;
+    if (v.ended || v.currentTime > v.duration - 0.2) v.currentTime = 0;
+    v.play();
+    sound.classList.add("hide");
+  });
+  play.addEventListener("click", function () {
+    v.muted = false; v.play(); play.style.display = "none"; sound.classList.add("hide");
+  });
+  v.addEventListener("playing", function () { play.style.display = "none"; });
+
+  v.addEventListener("ended", function () {
+    sound.classList.add("hide");
+    document.getElementById("skip").classList.add("hide");
+    end.classList.add("show");
+    var left = DELAY;
+    n.textContent = left;
+    var t = setInterval(function () {
+      left -= 1;
+      if (left > 0) { n.textContent = left; return; }
+      clearInterval(t);
+      window.location.replace(TARGET);
+    }, 1000);
+  });
+</script>
+</body>
+</html>
